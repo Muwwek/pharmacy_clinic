@@ -1,36 +1,154 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Pharmacy Clinic Management System
 
-## Getting Started
+ระบบบริหารจัดการร้านยาและคลินิก ประกอบด้วย
 
-First, run the development server:
+- Frontend: Next.js (App Router) + React + TypeScript + Tailwind CSS
+- Backend: Node.js + Express + MongoDB
+
+รองรับการใช้งานแบบแบ่งสิทธิ์ (Role-based)
+
+- Admin: จัดการผู้ใช้, จัดการยา, ดูรายงาน Dashboard
+- Doctor: จัดการผู้ป่วย, นัดหมาย, ใบสั่งยา และตัดสต็อกอัตโนมัติ
+
+## 1. ความสามารถหลักของระบบ
+
+- Authentication และ Authorization ตามบทบาทผู้ใช้
+- จัดการข้อมูลผู้ใช้ (Admin)
+- จัดการรายการยาและสต็อก (Admin)
+- จัดการผู้ป่วยและนัดหมาย (Doctor)
+- ออกใบสั่งยาและคำนวณราคารวม พร้อมตัดสต็อกอัตโนมัติ (Doctor)
+- รายงานเชิงปฏิบัติการ เช่น Top Medicines, Monthly Revenue, Stock Summary (Admin)
+
+## 2. โครงสร้างโปรเจกต์
+
+```text
+pharmacy_clinic/
+|- src/                 # Frontend (Next.js)
+|- public/              # Static assets
+|- backend/             # Backend API (Express + MongoDB)
+|  |- server.js
+|  |- db.js
+|  |- package.json
+|- package.json         # Frontend scripts/dependencies
+|- README.md
+```
+
+## 3. ข้อกำหนดระบบ (Prerequisites)
+
+- Node.js 20 ขึ้นไป
+- npm 10 ขึ้นไป
+- MongoDB (Local หรือ MongoDB Atlas)
+
+## 4. การติดตั้งระบบ
+
+### 4.1 ติดตั้ง Frontend dependencies
+
+จากโฟลเดอร์รากของโปรเจกต์:
+
+```bash
+npm install
+```
+
+### 4.2 ติดตั้ง Backend dependencies
+
+เข้าไปที่โฟลเดอร์ backend:
+
+```bash
+cd backend
+npm install
+```
+
+## 5. การตั้งค่า Environment Variables
+
+สร้างไฟล์ `backend/.env` และกำหนดค่าอย่างน้อยดังนี้:
+
+```env
+MONGO_URL=<your_mongodb_connection_string>
+DB_NAME=<your_database_name>
+PORT=3030
+FRONTEND_URL=http://localhost:3000
+```
+
+หมายเหตุสำคัญ
+
+- ห้าม commit ไฟล์ `.env` ขึ้น Git
+- โปรเจกต์นี้ตั้งค่า `.gitignore` ให้ ignore `.env*` แล้ว
+
+## 6. วิธีรันระบบ (Development)
+
+ต้องเปิด 2 terminal แยกกัน
+
+### Terminal A: รัน Backend API
+
+```bash
+cd backend
+npm run dev
+```
+
+Backend จะเริ่มทำงานที่:
+
+- `http://localhost:3030` (หรือพอร์ตตาม `PORT` ใน `.env`)
+
+### Terminal B: รัน Frontend
+
+จากโฟลเดอร์รากของโปรเจกต์:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Frontend จะเริ่มทำงานที่:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- `http://localhost:3000`
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 7. คำสั่งสำคัญ
 
-## Learn More
+### Frontend (โฟลเดอร์ราก)
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+npm run dev      # รันโหมดพัฒนา
+npm run build    # build สำหรับ production
+npm run start    # รัน production build
+npm run lint     # ตรวจ lint
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Backend (โฟลเดอร์ backend)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```bash
+npm run dev      # รัน backend
+npm run start    # รัน backend
+```
 
-## Deploy on Vercel
+## 8. แนวทางการ Deploy โดยย่อ
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- Deploy Frontend และ Backend แยกกัน
+- ตั้งค่า Environment Variables ให้ตรงตามสภาพแวดล้อมจริง
+- เปิด CORS ฝั่ง Backend ด้วยค่า `FRONTEND_URL` ของระบบจริง
+- ตรวจสอบการเชื่อมต่อ MongoDB และสิทธิ์ฐานข้อมูลก่อนเปิดใช้งาน
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 9. ปัญหาที่พบบ่อย
+
+### Backend รันไม่ขึ้น
+
+- ตรวจสอบว่า `backend/.env` มี `MONGO_URL` และ `DB_NAME`
+- ตรวจสอบว่า MongoDB เข้าถึงได้จริง
+
+### Login ไม่สำเร็จ
+
+- ตรวจสอบว่า Backend ทำงานอยู่ที่พอร์ตที่ถูกต้อง
+- ตรวจสอบว่า Frontend เรียก API base ถูกต้อง
+
+### CORS Error
+
+- ตรวจสอบค่า `FRONTEND_URL` ใน `backend/.env` ให้ตรงกับ URL ของ Frontend
+
+## 10. ข้อควรปฏิบัติด้านความปลอดภัย
+
+- ไม่เก็บข้อมูลลับไว้ในโค้ด
+- ไม่ commit `.env` หรือ credentials ใดๆ
+- จำกัดสิทธิ์ผู้ใช้ตามบทบาทอย่างเคร่งครัด
+- ตรวจสอบและ sanitize ข้อมูลก่อนบันทึกลงฐานข้อมูล
+
+---
+
+หากต้องการเอกสาร API แบบละเอียด (Endpoint/Request/Response) สามารถเพิ่มส่วน API Reference ต่อจากเอกสารนี้ได้ทันที
